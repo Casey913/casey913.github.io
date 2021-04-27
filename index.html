@@ -1,0 +1,89 @@
+<html>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js"></script>
+        <script src="https://unpkg.com/p5.collide2d"></script>
+    </head>
+    <body>
+    <script>
+        var w = 500;
+        var h = 500;
+        var x = w/2;
+        var y = h/2;
+        let ship1;
+        let ship3;
+        var hit = false;
+        let score = 0;
+        var timer = 0;        
+
+        function setup(){
+            let cvn = createCanvas(w,h);
+            ship1 = new Ship();
+            ship2 = new Ship();
+            ship3 = new Ship();
+            collideDebug(true);
+        }   
+        function draw() {
+            background(51);
+            clear();
+            ship1.show();
+            ship3.show1();
+            fill(color('black'));
+            ellipse(x, y,50)
+            let text1 = text("Score:" + score, 10, 20)
+            var text2 = text("Eat the white cricle to gain points. Get 20 points and you win!", 100, 20);
+            text("Don't eat the red one or you'll lose points. If you get below 0 points you lose.", 70, 40)
+            if (keyIsDown(87) && (y>0)) {
+                y = y-= 10;
+            }
+            if (keyIsDown(83) && (y<h-50)) {
+                y = y +=10;
+            }
+            if (keyIsDown(65) && (x>0)) {
+                x = x -=10;
+            }
+            if (keyIsDown(68) && (x<w-50)) {
+                x = x +=10;
+            }
+            if (score < 0){
+                clear();
+                text("You Died", 10, 20)
+            }
+            if (score === 20){
+                clear();
+                text("You Win!", 10, 20)
+            }
+        }
+        function Ship(){
+            this.x = random(50, w-50);
+            this.y = random(50, h);
+            
+            this.show = function(){
+                fill(color('white'));
+                ellipse(this.x, this.y, 25);
+                hit = collideRectRect(this.x, this.y, 50, 50, x, y, 50, 50);
+
+                if (hit === true){
+                    this.x = random(50, w-50);
+                    this.y = random(50, h);
+                    score++;
+                }
+            }
+            this.show1 = function(){
+                fill(color('red'));
+                ellipse(this.x, this.y, 25);
+                hit = collideRectRect(this.x, this.y, 50, 50, x, y, 50, 50);
+                if (hit === true){
+                    this.x = random(50, w-50);
+                    this.y = random(50, h);
+                    score--;
+                }
+                if (millis() >= 500 + timer) {
+                    this.x = random (50,w-50);
+                    this.y = random (50, h-50);
+                    timer = millis();
+                }
+            }
+        }
+    </script>
+    </body>
+</html>
